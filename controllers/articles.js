@@ -2,7 +2,7 @@ const Article = require("../models/article");
 const { BadRequestError, NotFoundError } = require("../utils/customErrors");
 const ERROR_CODES = require("../utils/errors");
 
-const createArticle = (req, res, next) => {
+const saveArticle = (req, res, next) => {
   const { title, description, source, link, image, date } = req.body;
 
   Article.create({
@@ -51,7 +51,7 @@ const deleteArticle = (req, res, next) => {
 };
 
 module.exports = {
-  createArticle,
+  saveArticle,
   getArticles,
   deleteArticle,
 };

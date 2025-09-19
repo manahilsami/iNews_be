@@ -1,39 +1,38 @@
-// require("dotenv").config();
+require("dotenv").config();
 const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const { errors } = require("celebrate");
+const mainRouter = require("./routes/index");
+const errorHandler = require("./middlewares/error-handler");
+const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
-const mongoose = require("mongoose");
-
-// const cors = require("cors");
-// app.use(cors());
-
-// const { errors } = require("celebrate");
-// app.use(errors());
-
 const { PORT = 3000 } = process.env;
 
-app.use(express.json());
+mongoose
+  .connect("mongodb://127.0.0.1:27017/wtwr_db")
+  .then(() => {
+    // Connected to DB successfully
+  })
+  .catch(console.error);
 
-app.listen(PORT, () => {
-  // if everything works fine, the console will show which port the application is listening to
-  console.log(`App listening at port ${PORT}`);
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
 });
 
-// const mainRouter = require("./routes/index");
-// const errorHandler = require("./middlewares/error-handler");
-// const { requestLogger, errorLogger } = require("./middlewares/logger");
+app.use(requestLogger);
+app.use(cors());
+app.use(express.json());
+app.use("/", mainRouter);
 
-// mongoose
-//   .connect("mongodb://127.0.0.1:27017/wtwr_db")
-//   .then(() => {
-//     // Connected to DB successfully
-//   })
-//   .catch(console.error);
+app.use(errorLogger);
 
-// app.use(requestLogger);
+app.use(errors());
+app.use(errorHandler);
 
-// app.use("/", mainRouter);
-
-// app.use(errorLogger);
-
-// app.use(errorHandler);
+app.listen(PORT, () => {
+  // Server is listening on the specified port
+});
