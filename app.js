@@ -11,7 +11,7 @@ const app = express();
 const { PORT = 3000 } = process.env;
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/wtwr_db")
+  .connect("mongodb://127.0.0.1:27017/wtwr_db") // change!!
   .then(() => {
     // Connected to DB successfully
   })
@@ -33,6 +33,6 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  // Server is listening on the specified port
+app.listen(3000, () => {
+  console.log("Server is listening on port 3000");
 });

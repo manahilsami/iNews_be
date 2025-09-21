@@ -16,7 +16,7 @@ const validateArticle = celebrate({
     title: Joi.string().required().messages({
       "string.empty": 'The "title" field must be filled in',
     }),
-    text: Joi.string().required().messages({
+    description: Joi.string().required().messages({
       "string.empty": 'The "text" field must be filled in',
     }),
     date: Joi.string().required().messages({

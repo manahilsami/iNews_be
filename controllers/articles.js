@@ -3,15 +3,18 @@ const { BadRequestError, NotFoundError } = require("../utils/customErrors");
 const ERROR_CODES = require("../utils/errors");
 
 const saveArticle = (req, res, next) => {
-  const { title, description, source, link, image, date } = req.body;
+  console.log("Request body:", req.body);
+  console.log("Request owner:", req.user._id);
+  const { title, description, image, source, date, link, keyword } = req.body;
 
   Article.create({
     title,
     description,
-    source,
-    link,
     image,
+    source,
     date,
+    link,
+    keyword,
     owner: req.user._id,
   })
     .then((article) => res.status(ERROR_CODES.CREATED.code).send(article))
@@ -31,19 +34,21 @@ const getArticles = (req, res, next) => {
 };
 
 const deleteArticle = (req, res, next) => {
-  const { articleId } = req.params;
-  const currentUserId = req.user._id;
-
-  Article.findAndDelete({ _id: articleId, owner: req.user._id })
-    .orFail()
-    .then((deletedArticle) =>
-      res.status(ERROR_CODES.OK.code).send(deletedArticle)
-    )
+  // articleId may contain slashes, so decode it
+  const articleLink = decodeURIComponent(req.params.articleId);
+  Article.findOneAndDelete({ link: articleLink, owner: req.user._id })
+    .then((deletedArticle) => {
+      if (!deletedArticle) {
+        // If not found, return 200 OK with a message
+        return res
+          .status(ERROR_CODES.OK.code)
+          .send({ message: "Article not found, nothing deleted." });
+      }
+      res.status(ERROR_CODES.OK.code).send(deletedArticle);
+    })
     .catch((err) => {
       if (err.name === "CastError") {
         next(new BadRequestError("The id string is in an invalid format"));
-      } else if (err.name === "DocumentNotFoundError") {
-        next(new NotFoundError("Article not found"));
       } else {
         next(err);
       }
