@@ -38,7 +38,7 @@ const validateArticle = celebrate({
 
 const validateUserInfo = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30).messages({
+    username: Joi.string().min(2).max(30).messages({
       "string.min": 'The minimum length of the "name" field is 2',
       "string.max": 'The maximum length of the "name" field is 30',
     }),

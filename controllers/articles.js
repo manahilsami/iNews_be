@@ -34,9 +34,8 @@ const getArticles = (req, res, next) => {
 };
 
 const deleteArticle = (req, res, next) => {
-  // articleId may contain slashes, so decode it
-  const articleLink = decodeURIComponent(req.params.articleId);
-  Article.findOneAndDelete({ link: articleLink, owner: req.user._id })
+  const articleId = req.params.articleId;
+  Article.findOneAndDelete({ _id: articleId, owner: req.user._id })
     .then((deletedArticle) => {
       if (!deletedArticle) {
         // If not found, return 200 OK with a message
