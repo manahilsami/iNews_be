@@ -2,6 +2,10 @@
 
 Express + MongoDB backend for NewsExplorer. Provides user authentication and saved articles API used by the frontend.
 
+## Frontend
+
+- Production frontend: http://newsexplorer.fpr.net
+
 ## Features
 
 - JWT authentication (signup/signin)
